@@ -4,6 +4,7 @@ const port = 4000;
 const dbSetup = require('./database/setup');
 const eventRoutes = require('./routes/eventRoutes');
 const authRoutes = require('./routes/authRoutes');
+const {seedAdmin} = require('./seeders/admin');
 
 app.use(express.json());
 dbSetup();
