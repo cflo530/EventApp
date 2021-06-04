@@ -12,6 +12,10 @@ const eventSchema = new mongoose.Schema({
     category: {
         type: String,
         enum: ['business', 'casual', 'party', 'general']
+    },
+    image: {
+        type: String,
+        required: true
     }
 });
 

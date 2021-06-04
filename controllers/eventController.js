@@ -1,16 +1,17 @@
 const Event = require('../models/event');
+const {genImage} = require('../services/image');
 
 exports.createNewEvent = (req, res) => {
-    Event.create({
-        ...req.body
-    }, (err, newEvent) => {
-        if(err){
-            return res.status(500).json({message: err});
-        }
-        else{
-            return res.status(200).json({message: "New event created", newEvent});
-        }
-    })
+    try {
+        const { title, cost, category } = req.body
+        const imageUrl = genImage(category)
+    
+        let newEvent = Event.create({ title, cost, category })
+        res.json({message: `Event successfully created!`, newEvent})
+      } catch (err) {
+        res.status(500).json({ message: err.message })
+      }
+    
 };
 
 exports.fetchEvents = (req, res) => {

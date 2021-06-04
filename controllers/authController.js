@@ -1,8 +1,6 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const secret ='verySecureSECRET';
-const expiry = 3600;
+const {createToken} = require('../services/jwtService');
 
 exports.registerNewUser = (req, res) => {
     User.findOne({email: req.body.email}, (err, existingUser) => {
@@ -33,16 +31,13 @@ exports.registerNewUser = (req, res) => {
                         if(err){
                             return res.status(500).json({err});
                         }
-                        jwt.sign({
-                            id: newUser._id,
-                            email: newUser.email,
-                            firstName: newUser.firstName,
-                            lastName: newUser.lastName
-                        }, secret, {expiresIn: expiry}, (err, token) => {
-                            if(err){
-                                return res.status(500).json({err});
-                            }
-                            return res.status(200).json({message: 'User registration successful'});
+                        let token = createToken(newUser);
+                        if(!token){
+                            return res.status(500).json({message: "Sorry, could not authenticate. Please login."})
+                        }
+                        return res.status(200).json({ 
+                            message:"user registration successful",
+                            token
                         })
                     })
                 })
@@ -63,16 +58,13 @@ exports.loginUser = (req, res) => {
         if(!match){
             return res.status(401).json({message: 'Incorrect password'});
         }
-        jwt.sign({
-            id: foundUser._id,
-            email: foundUser.email,
-            firstName: foundUser.firstName,
-            lastName: foundUser.lastName
-        }, secret, {expiresIn: expiry}, (err, token) => {
-            if(err){
-                return res.status(500).json({err});
-            }
-            return res.status(200).json({message: 'Login successful'});
+        let token = createToken(foundUser);
+        if(!token){
+            return res.status(500).json({message: "Sorry, could not authenticate. Please login."})
+        }
+        return res.status(200).json({ 
+            message:"user login successful",
+            token
         })
     })
 };
