@@ -1,3 +1,3 @@
 # EventApp
 
-Assignment for RA. CRUD concept for and Event application.
+CRUD concept for an Event application.
